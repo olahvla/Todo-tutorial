@@ -1,0 +1,30 @@
+{
+    "name": "backend",
+    "models": [{
+        "name": "Note",
+        "properties": [{
+            "dslType": "long",
+            "name": "id",
+            "wrappers": []
+        }, {
+            "dslType": "text",
+            "name": "title",
+            "wrappers": [],
+            "maxSize": "255"
+        }, {
+            "dslType": "text",
+            "name": "content",
+            "wrappers": [],
+            "maxSize": "255"
+        }],
+        "references": [],
+        "primaryKeys": [{
+            "dslType": "long",
+            "name": "id",
+            "wrappers": []
+        }],
+        "primaryKeySqlName": "PK_NOTE_I_12EF6B",
+        "uniques": [],
+        "indices": []
+    }]
+}
