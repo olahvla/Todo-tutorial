@@ -1,0 +1,256 @@
+todo project[
+    url www.todo.com
+    namespace com.todo](
+    backend server[
+        template java-springboot
+        developer(
+            Karolina
+            docker
+        )
+        path /
+        default model type mysql](
+        Note model[
+            type mysql](
+            id integer[
+                primarykey
+                max 9223372036854775807]
+            title text[
+                max 255]
+            content text[
+                max 255]
+            findAll find from Note as Note
+            countAll count from Note as Note
+            findById find from Note as Note where Note.id == id
+            getById get from Note as Note where Note.id == id
+            deleteById delete from Note as Note where Note.id == id
+            findByTitle find from Note as Note where Note.title == title
+            findByContent find from Note as Note where Note.content == content
+            notes find from Note as Note
+        )
+        NoteApi api(
+            readNote find[
+                get /note/:id
+                query Note.findById
+                response(
+                    Note.id
+                    Note.title
+                    Note.content
+                )
+                errors
+                request ReadNoteRequest
+                response ReadNoteResponse]
+            ReadNoteRequest dto(
+                id integer[
+                    max 9223372036854775807]
+            )
+            ReadNoteResponse dto(
+                id integer[
+                    max 9223372036854775807]
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            createNote create[
+                post /note
+                model Note
+                query Note.findById
+                response(
+                    Note.id
+                    Note.title
+                    Note.content
+                )
+                errors
+                request CreateNoteRequest
+                response CreateNoteResponse](
+                id id[
+                    visible(
+                        read
+                    )]
+                title title[
+                    visible(
+                        create
+                        read
+                    )]
+                content content[
+                    visible(
+                        create
+                        read
+                    )]
+            )
+            CreateNoteRequest dto(
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            CreateNoteResponse dto(
+                id integer[
+                    max 9223372036854775807]
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            updateNote update[
+                put /note/:id
+                model Note
+                query Note.findById
+                response(
+                    Note.id
+                    Note.title
+                    Note.content
+                )
+                errors
+                request UpdateNoteRequest
+                response UpdateNoteResponse](
+                id id[
+                    visible(
+                        read
+                        update
+                    )]
+                title title[
+                    visible(
+                        read
+                        update
+                    )]
+                content content[
+                    visible(
+                        read
+                        update
+                    )]
+            )
+            UpdateNoteRequest dto(
+                id integer[
+                    max 9223372036854775807]
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            UpdateNoteResponse dto(
+                id integer[
+                    max 9223372036854775807]
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            deleteNote delete[
+                delete /note/:id
+                query Note.findById
+                errors
+                request DeleteNoteRequest]
+            DeleteNoteRequest dto(
+                id integer[
+                    max 9223372036854775807]
+            )
+            notes find[
+                query Note.notes
+                get /notes
+                errors
+                response(
+                    Note.id
+                    Note.title
+                    Note.content
+                )
+                response list NotesResponse]
+            NotesResponse dto(
+                id integer[
+                    max 9223372036854775807]
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+        )
+    )
+    webApp client[
+        template js-angular
+        connectedTo(
+            backend.NoteApi.readNote
+            backend.NoteApi.createNote
+            backend.NoteApi.updateNote
+            backend.NoteApi.deleteNote
+            backend.NoteApi.notes
+        )
+        path /home
+        home notesPage
+        i18n(
+            en
+        )](
+        NoteUpdated event
+        notesPage page[
+            path /notes](
+            addNote button{
+                on click(
+                    open createNewNote
+                )}
+            notes notes
+        )
+        createNewNote form[
+            submit NoteApi.createNote
+            model[
+                dto backend.NoteApi.CreateNoteRequest](
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            visible(
+                title
+                content
+            )](
+            title text[
+                bind(
+                    model . title
+                )
+                max 255]
+            content text[
+                bind(
+                    model . content
+                )
+                max 255]
+            submit button
+        ){
+            on success(
+                close
+                fire NoteUpdated
+            )}
+        notes table[
+            load NoteApi.notes
+            model[
+                dto backend.NoteApi.NotesResponse](
+                id integer[
+                    max 9223372036854775807]
+                title text[
+                    max 255]
+                content text[
+                    max 255]
+            )
+            visible(
+                id
+                title
+                content
+            )](
+            id integer[
+                bind(
+                    model . id
+                )
+                max 9223372036854775807]
+            title text[
+                bind(
+                    model . title
+                )
+                max 255]
+            content text[
+                bind(
+                    model . content
+                )
+                max 255]
+        ){
+            on NoteUpdated(
+                reload
+            )}
+    )
+)
